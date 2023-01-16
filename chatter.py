@@ -1,9 +1,10 @@
-import json, os
-
-from revChatGPT.revChatGPT import Chatbot
-
-
 class Chatter:
+    openai.api_key = "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"
+
+    start_sequence = "\nAI:"
+    restart_sequence = "\nHuman: "
+
+    
     def __init__(self):
         """Chatter is a wrapper of acheong08's excellent Reverse Engineered ChatGPT"""
         config = {
@@ -14,16 +15,18 @@ class Chatter:
         return None
 
     def get_response(self, prompt):
-        """Basic ChatGPT query. Give a prompt, get a response.
+        response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=prompt,
+        temperature=0.9,
+        max_tokens=150,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0.6,
+        stop=[" Human:", " AI:"]
+        )
 
-        Parameters
-        ----------
-        prompt : str
-            the instructions/dialogue provided to ChatGPT
-        """
-        self.chatbot.reset_chat()
-        message = self.chatbot.get_chat_response(prompt)["message"]
-        return message
+    return response.choices[0].text
 
     def parse_job(self, job):
         """Creates a prompt from a job dict
@@ -79,3 +82,4 @@ class Chatter:
         prompt = self.parse_job(job)
         message = self.get_response(prompt)
         return message
+
